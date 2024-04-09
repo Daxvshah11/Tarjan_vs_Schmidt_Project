@@ -2,12 +2,22 @@
 
 using namespace std;
 
-//  min + (rand() % (int)(max - min + 1))
-// above is the formula for generating between min and max
+// min + (rand() % (int)(max - min + 1))
+// above is the formula for generating random between min and max
 
 // this is the function that generates a random graph
-map<int, unordered_set<int>> generateRandomGraph(int numNodes, int numEdges)
+map<int, unordered_set<int>> generateRandomGraph()
 {
+    // taking inputs
+    int numNodes, numEdges;
+    cout << "Enter the number of nodes : ";
+    cin >> numNodes;
+    cout << "Enter the number of edges : ";
+    cin >> numEdges;
+
+    // seeding the random number generator
+    srand(time(0));
+
     // initialising the graph
     map<int, unordered_set<int>> graph;
 
@@ -63,24 +73,15 @@ void printGraph(const map<int, unordered_set<int>> &graph)
     }
 }
 
-// MAIN
-int main()
-{
-    // seeding the random number generator
-    srand(time(0));
+// // MAIN
+// int main()
+// {
+//     // just checking working here
+//     // intialise and get random
+//     map<int, unordered_set<int>> randomGraph = generateRandomGraph();
 
-    // just checking working here
-    int numNodes, numEdges;
-    cout << "Enter the number of nodes : ";
-    cin >> numNodes;
-    cout << "Enter the number of edges : ";
-    cin >> numEdges;
+//     // print check
+//     printGraph(randomGraph);
 
-    // intialise and get random
-    map<int, unordered_set<int>> randomGraph = generateRandomGraph(numNodes, numEdges);
-
-    // print check
-    printGraph(randomGraph);
-
-    return 0;
-}
+//     return 0;
+// }
