@@ -100,28 +100,20 @@ bool Tarjan_BiconnCheck(map<int, unordered_set<int>> &graph)
     vector<int> low(graph.size() + 1, -1);
     vector<int> parent(graph.size() + 1, -1);
     int time = 0;
-
+    int root = 1;
     // START TIMER
     auto CLOCK_START = chrono::high_resolution_clock::now();
 
-    // iterating over all the nodes in case graph is disconnected or something like that
-    for (int thisNode = 1; thisNode <= graph.size(); thisNode++)
+    DFS(graph, visited, root, discoveryTime, low, parent, time, articulationPoints);
+    // Check for graph connectedness
+    if (graph.size() != visited.size() - 1) 
     {
-        if (thisNode == 1)
-        {
-            // calling DFS on the graph to find all the articulation points
-            DFS(graph, visited, thisNode, discoveryTime, low, parent, time, articulationPoints);
-        }
-        else if (!visited[thisNode] && thisNode != 1)
-        {
-            // this means the graph is DISCONNECTED in the first place
-            isBiconnected = false;
-            break;
-        }
+        // this means the graph is DISCONNECTED in the first place
+        isBiconnected = false;
     }
 
     // checking if articulation points are found
-    if (isBiconnected && articulationPoints.size() != 0)
+    if (articulationPoints.size() != 0)
     {
         // this means the graph is NOT BICONNECTED
         isBiconnected = false;
@@ -173,14 +165,14 @@ int main()
     map<int, unordered_set<int>> graph = generateRandomGraph();
 
     // printing the graph (COMMENT THIS FOR LARGE DATASET INPUTS)
-    printGraph(graph);
+    // printGraph(graph);
 
     // finding articulation points
     bool isBiconnected = Tarjan_BiconnCheck(graph);
 
     // printing final output
     if (isBiconnected)
-        cout << "\nGraph is Biconnected" << endl;
+        cout << "\nGraph is biconnected" << endl;
     else
-        cout << "\nGraph is NOT Biconnected" << endl;
+        cout << "\nGraph is not biconnected" << endl;
 }
