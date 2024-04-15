@@ -100,7 +100,7 @@ bool Tarjan_BiconnCheck(map<int, unordered_set<int>> &graph)
     vector<int> low(graph.size() + 1, -1);
     vector<int> parent(graph.size() + 1, -1);
     int time = 0;
-    int root = 1;
+    int root = 0;
     // START TIMER
     auto CLOCK_START = chrono::high_resolution_clock::now();
 

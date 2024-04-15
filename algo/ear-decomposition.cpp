@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include <vector>
 #include <map>
 #include <set>
@@ -6,7 +7,8 @@
 #include <stdlib.h>
 #include <bits/stdc++.h>
 #include "graphGenerator.cpp"
-#include <chrono>
+
+using namespace std;
 
 class Graph {
 public:
@@ -16,7 +18,7 @@ public:
         visit_order_index.resize(adj_list.size(), -1);
     }
 
-    void dfs_recursive(int node, std::vector<int>& visited, std::map<int, int>& parent, std::vector<std::vector<int>>& back_edges) {
+    void dfs_recursive(int node, std::vector<int>& visited, std::map<int, int>& parent, std::vector<std::pair<int, int>>& back_edges) {
         // Add node to visited nodes list
         int order = visited.size();
         visited.push_back(node);
@@ -28,7 +30,7 @@ public:
                 dfs_recursive(neighbor, visited, parent, back_edges);
             // Find back-edges and create a "directed" edge as per algorithm.
             } else if (parent[node] != neighbor) {
-                std::vector<int> edge = {node, neighbor};
+                std::pair<int, int> edge = {node, neighbor};
                 if (std::find(back_edges.begin(), back_edges.end(), edge) == back_edges.end())
                     back_edges.push_back({neighbor, node});
             }
@@ -44,22 +46,22 @@ public:
         back-edges after sorting: (0, 6), (0, 8), (6, 3), (6, 2), (8, 3), (7, 2), (7, 1), (3, 4), (9, 2), (4, 1)
     */
 
-    void sort_back_edges(std::vector<std::vector<int>>& back_edges) {
+    void sort_back_edges(std::vector<std::pair<int, int>>& back_edges) {
         // Sort back_edges using the precomputed visit_order_index for fast lookup
-        std::sort(back_edges.begin(), back_edges.end(), [this](const std::vector<int>& a, const std::vector<int>& b) {
-            return visit_order_index[a[0]] < visit_order_index[b[0]] || (visit_order_index[a[0]] == visit_order_index[b[0]] && visit_order_index[a[1]] < visit_order_index[b[1]]);
+        std::sort(back_edges.begin(), back_edges.end(), [this](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+            return visit_order_index[a.first] < visit_order_index[b.first] || (visit_order_index[a.first] == visit_order_index[b.first] && visit_order_index[a.second] < visit_order_index[b.second]);
         });
     }
 };
 
 class GraphAnalysis {
 public:
-    static std::vector<std::vector<int>> ear_decomposition(const std::map<int, int>& parents, const std::vector<std::vector<int>>& back_edges) {
+    static std::vector<std::vector<int>> ear_decomposition(const std::map<int, int>& parents, const std::vector<std::pair<int, int>>& back_edges) {
         std::vector<std::vector<int>> ears_list;
         std::set<int> visited_nodes;
 
         for (const auto& edge : back_edges) {
-            int node = edge[0], neighbour = edge[1];
+            int node = edge.first, neighbour = edge.second;
             std::vector<int> ear = {node, neighbour};
             visited_nodes.insert(node);
             if (visited_nodes.find(neighbour) != visited_nodes.end()) {
@@ -118,31 +120,12 @@ int main() {
     Graph graph(graph_data);
     std::vector<int> visited;
     std::map<int, int> parents;
-    std::vector<std::vector<int>> back_edges;
-    int root = 1;
+    std::vector<std::pair<int, int>> back_edges;
+    int root = 0;
 
     auto CLOCK_START = chrono::high_resolution_clock::now();
 
     graph.dfs_recursive(root, visited, parents, back_edges);
-
-    std::cout << "Visited: ";
-    for (int element : visited) {
-        std::cout << element << " ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "Back edges:" << std::endl;
-    for (size_t i = 0; i < back_edges.size(); ++i) {
-        std::cout << "(";
-        for (size_t j = 0; j < back_edges[i].size(); ++j) {
-            std::cout << back_edges[i][j];
-            if (j < back_edges[i].size() - 1) std::cout << ", ";
-        }
-        std::cout << ")";
-        if (i < back_edges.size() - 1) std::cout << ", ";
-    }
-    std::cout << std::endl;
-
     graph.sort_back_edges(back_edges);
 
     auto INTERMEDIATE = chrono::high_resolution_clock::now();
@@ -167,7 +150,7 @@ int main() {
         std::cout << "Graph is not biconnected" << std::endl;
     }
     auto CLOCK_STOP = chrono::high_resolution_clock::now();
-    double full_time_taken = chrono::duration_cast<chrono::nanoseconds>(CLOCK_STOP - CLOCK_START).count();
+    double full_time_taken = chrono::duration_cast<chrono::nanoseconds>(CLOCK_STOP - INTERMEDIATE).count();
     full_time_taken *= 1e-9;
-    cout << "\nTime taken : " << fixed << full_time_taken << setprecision(9) << " sec" << endl;
+    cout << "Time taken : " << fixed << full_time_taken << setprecision(9) << " sec" << endl;
 }

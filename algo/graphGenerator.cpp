@@ -1,68 +1,47 @@
 #include <bits/stdc++.h>
+#include <fstream>
+#include <unordered_set>
+#include <map>
 
 using namespace std;
 
-// min + (rand() % (int)(max - min + 1))
-// above is the formula for generating random between min and max
-
-// this is the function that generates a random graph
 map<int, unordered_set<int>> generateRandomGraph()
 {
-    // taking inputs
     int numNodes, numEdges;
     cout << "Enter the number of nodes : ";
     cin >> numNodes;
     cout << "Enter the number of edges : ";
     cin >> numEdges;
 
-    // seeding the random number generator
     srand(time(0));
-
-    // initialising the graph
     map<int, unordered_set<int>> graph;
 
-    // adding all the nodes pre-hand with empty sets initialised
-    for (int i = 1; i <= numNodes; i++)
+    for (int i = 0; i < numNodes; i++)
     {
         graph[i] = unordered_set<int>();
     }
 
-    // this part is to make each and every chosen edge by randomly choosing 2 nodes
-    for (int i = 1; i <= numEdges; i++)
+    for (int i = 0; i < numEdges; i++)
     {
-        // choosing random 2 nodes
-        int node1 = 1 + (rand() % numNodes);
-        int node2 = 1 + (rand() % numNodes);
+        int node1 = (rand() % numNodes);
+        int node2 = (rand() % numNodes);
 
-        // explicitly checking for self loops just in case
-        if (node1 == node2)
+        if (node1 == node2 || graph[node1].find(node2) != graph[node1].end())
         {
-            // ignoring this edge generation
             i--;
             continue;
         }
 
-        // checking if the selected edge didn't already exist
-        if (graph[node1].find(node2) != graph[node1].end())
-        {
-            // ignoring this edge generation
-            i--;
-            continue;
-        }
-
-        // otherwise, finally adding the random edge to the graph
         graph[node1].insert(node2);
         graph[node2].insert(node1);
     }
 
-    // returning the graph
     return graph;
 }
 
-// this function is just for our purpose to check if random generation is working fine
-void printGraph(const map<int, unordered_set<int>> &graph)
+void printGraph(const map<int, unordered_set<int>>& graph)
 {
-    for (const auto &pair : graph)
+    for (const auto& pair : graph)
     {
         cout << "Node " << pair.first << " is connected to: ";
         for (int node : pair.second)
@@ -73,15 +52,33 @@ void printGraph(const map<int, unordered_set<int>> &graph)
     }
 }
 
-// // MAIN
-// int main()
-// {
-//     // just checking working here
-//     // intialise and get random
-//     map<int, unordered_set<int>> randomGraph = generateRandomGraph();
+void writeGraphToFile(const map<int, unordered_set<int>>& graph, const string& filename)
+{
+    ofstream outFile(filename);
+    if (!outFile.is_open())
+    {
+        cerr << "Failed to open file: " << filename << endl;
+        return;
+    }
+    for (const auto& pair : graph)
+    {
+        outFile << pair.first;
+        for (int node : pair.second)
+        {
+            outFile << " " << node;
+        }
+        outFile << "\n";
+    }
+    outFile.close();
+    cout << "Graph successfully written to " << filename << endl;
+}
 
-//     // print check
-//     printGraph(randomGraph);
+int main()
+{
+    map<int, unordered_set<int>> randomGraph = generateRandomGraph();
+    // printGraph(randomGraph);
+    string filename = "adjacency-list.txt";
+    writeGraphToFile(randomGraph, filename);
 
-//     return 0;
-// }
+    return 0;
+}
