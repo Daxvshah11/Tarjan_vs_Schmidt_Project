@@ -1,6 +1,4 @@
 #include <bits/stdc++.h>
-#include <fstream>
-#include <unordered_set>
 #include <map>
 
 using namespace std;
@@ -39,9 +37,9 @@ map<int, unordered_set<int>> generateRandomGraph()
     return graph;
 }
 
-void printGraph(const map<int, unordered_set<int>>& graph)
+void printGraph(const map<int, unordered_set<int>> &graph)
 {
-    for (const auto& pair : graph)
+    for (const auto &pair : graph)
     {
         cout << "Node " << pair.first << " is connected to: ";
         for (int node : pair.second)
@@ -52,7 +50,7 @@ void printGraph(const map<int, unordered_set<int>>& graph)
     }
 }
 
-void writeGraphToFile(const map<int, unordered_set<int>>& graph, const string& filename)
+void writeGraphToFile(const map<int, unordered_set<int>> &graph, const string &filename)
 {
     ofstream outFile(filename);
     if (!outFile.is_open())
@@ -60,7 +58,7 @@ void writeGraphToFile(const map<int, unordered_set<int>>& graph, const string& f
         cerr << "Failed to open file: " << filename << endl;
         return;
     }
-    for (const auto& pair : graph)
+    for (const auto &pair : graph)
     {
         outFile << pair.first;
         for (int node : pair.second)
@@ -73,12 +71,14 @@ void writeGraphToFile(const map<int, unordered_set<int>>& graph, const string& f
     cout << "Graph successfully written to " << filename << endl;
 }
 
-int main()
-{
-    map<int, unordered_set<int>> randomGraph = generateRandomGraph();
-    // printGraph(randomGraph);
-    string filename = "adjacency-list.txt";
-    writeGraphToFile(randomGraph, filename);
+// COMMENTABLE CODE BELOW (only for testing)
 
-    return 0;
-}
+// int main()
+// {
+//     map<int, unordered_set<int>> randomGraph = generateRandomGraph();
+//     // printGraph(randomGraph);
+//     string filename = "adjacency-list.txt";
+//     writeGraphToFile(randomGraph, filename);
+
+//     return 0;
+// }

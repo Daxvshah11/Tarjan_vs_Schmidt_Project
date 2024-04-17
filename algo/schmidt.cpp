@@ -1,37 +1,38 @@
-#include <iostream>
 #include <chrono>
-#include <vector>
-#include <map>
-#include <set>
-#include <algorithm>
-#include <stdlib.h>
 #include <bits/stdc++.h>
 #include "graphGenerator.cpp"
 
 using namespace std;
 
-class Graph {
+class Graph
+{
 public:
-    std::map<int, std::unordered_set<int>> adjacency_list;
-    std::vector<int> visit_order_index;
-    Graph(const std::map<int, std::unordered_set<int>>& adj_list) : adjacency_list(adj_list) {
+    map<int, unordered_set<int>> adjacency_list;
+    vector<int> visit_order_index;
+    Graph(const map<int, unordered_set<int>> &adj_list) : adjacency_list(adj_list)
+    {
         visit_order_index.resize(adj_list.size(), -1);
     }
 
-    void dfs_recursive(int node, std::vector<int>& visited, std::map<int, int>& parent, std::vector<std::pair<int, int>>& back_edges) {
+    void dfs_recursive(int node, vector<int> &visited, map<int, int> &parent, vector<pair<int, int>> &back_edges)
+    {
         // Add node to visited nodes list
         int order = visited.size();
         visited.push_back(node);
         visit_order_index[node] = order;
-        for (int neighbor : adjacency_list[node]) {
+        for (int neighbor : adjacency_list[node])
+        {
             // Keep track of parent node of the neighbour node and continue with DFS
-            if (std::find(visited.begin(), visited.end(), neighbor) == visited.end()) {
+            if (find(visited.begin(), visited.end(), neighbor) == visited.end())
+            {
                 parent[neighbor] = node;
                 dfs_recursive(neighbor, visited, parent, back_edges);
-            // Find back-edges and create a "directed" edge as per algorithm.
-            } else if (parent[node] != neighbor) {
-                std::pair<int, int> edge = {node, neighbor};
-                if (std::find(back_edges.begin(), back_edges.end(), edge) == back_edges.end())
+                // Find back-edges and create a "directed" edge as per algorithm.
+            }
+            else if (parent[node] != neighbor)
+            {
+                pair<int, int> edge = {node, neighbor};
+                if (find(back_edges.begin(), back_edges.end(), edge) == back_edges.end())
                     back_edges.push_back({neighbor, node});
             }
         }
@@ -46,31 +47,36 @@ public:
         back-edges after sorting: (0, 6), (0, 8), (6, 3), (6, 2), (8, 3), (7, 2), (7, 1), (3, 4), (9, 2), (4, 1)
     */
 
-    void sort_back_edges(std::vector<std::pair<int, int>>& back_edges) {
+    void sort_back_edges(vector<pair<int, int>> &back_edges)
+    {
         // Sort back_edges using the precomputed visit_order_index for fast lookup
-        std::sort(back_edges.begin(), back_edges.end(), [this](const std::pair<int, int>& a, const std::pair<int, int>& b) {
-            return visit_order_index[a.first] < visit_order_index[b.first] || (visit_order_index[a.first] == visit_order_index[b.first] && visit_order_index[a.second] < visit_order_index[b.second]);
-        });
+        sort(back_edges.begin(), back_edges.end(), [this](const pair<int, int> &a, const pair<int, int> &b)
+             { return (visit_order_index[a.first] < visit_order_index[b.first] || (visit_order_index[a.first] == visit_order_index[b.first] && visit_order_index[a.second] < visit_order_index[b.second])); });
     }
 };
 
-class GraphAnalysis {
+class GraphAnalysis
+{
 public:
-    static std::vector<std::vector<int>> ear_decomposition(const std::map<int, int>& parents, const std::vector<std::pair<int, int>>& back_edges) {
-        std::vector<std::vector<int>> ears_list;
-        std::set<int> visited_nodes;
+    static vector<vector<int>> ear_decomposition(const map<int, int> &parents, const vector<pair<int, int>> &back_edges)
+    {
+        vector<vector<int>> ears_list;
+        set<int> visited_nodes;
 
-        for (const auto& edge : back_edges) {
+        for (const auto &edge : back_edges)
+        {
             int node = edge.first, neighbour = edge.second;
-            std::vector<int> ear = {node, neighbour};
+            vector<int> ear = {node, neighbour};
             visited_nodes.insert(node);
-            if (visited_nodes.find(neighbour) != visited_nodes.end()) {
+            if (visited_nodes.find(neighbour) != visited_nodes.end())
+            {
                 ears_list.push_back(ear);
                 continue;
             }
             visited_nodes.insert(neighbour);
             int parent_node = parents.at(neighbour);
-            while (parent_node && visited_nodes.find(parent_node) == visited_nodes.end()) {
+            while (parent_node && visited_nodes.find(parent_node) == visited_nodes.end())
+            {
                 ear.push_back(parent_node);
                 visited_nodes.insert(parent_node);
                 parent_node = parents.at(parent_node);
@@ -81,28 +87,31 @@ public:
         return ears_list;
     }
 
-    static bool test_for_biconnectedness(const std::map<int, std::unordered_set<int>>& graph, const std::vector<std::vector<int>>& ears) {
+    static bool test_for_biconnectedness(const map<int, unordered_set<int>> &graph, const vector<vector<int>> &ears)
+    {
         int edge_count = 0;
-        for (const auto& ear : ears) {
+        for (const auto &ear : ears)
+        {
             edge_count += ear.size() - 1;
         }
         int graph_edge_count = 0;
-        for (const auto& pair : graph) {
+        for (const auto &pair : graph)
+        {
             graph_edge_count += pair.second.size();
         }
         graph_edge_count /= 2;
 
         bool first_is_cyclic = !ears.empty() && (ears.front().front() == ears.front().back());
-        bool others_are_not_cyclic = std::all_of(ears.begin() + 1, ears.end(), [](const std::vector<int>& ear) {
-            return ear.front() != ear.back();
-        });
+        bool others_are_not_cyclic = all_of(ears.begin() + 1, ears.end(), [](const vector<int> &ear)
+                                            { return ear.front() != ear.back(); });
 
         return edge_count == graph_edge_count && first_is_cyclic && others_are_not_cyclic;
     }
 };
 
-int main() {
-    // std::map<int, std::unordered_set<int>> graph_data = {
+int main()
+{
+    // map<int, unordered_set<int>> graph_data = {
     //     {0, {6, 8, 5}},
     //     {1, {2, 4, 7}},
     //     {2, {1, 6, 9, 4, 7}},
@@ -115,42 +124,51 @@ int main() {
     //     {9, {2, 3, 4}}
     // };
 
-    std::map<int, std::unordered_set<int>> graph_data = generateRandomGraph();
+    map<int, unordered_set<int>> graph_data = generateRandomGraph();
 
     Graph graph(graph_data);
-    std::vector<int> visited;
-    std::map<int, int> parents;
-    std::vector<std::pair<int, int>> back_edges;
+    vector<int> visited;
+    map<int, int> parents;
+    vector<pair<int, int>> back_edges;
     int root = 0;
 
     auto CLOCK_START = chrono::high_resolution_clock::now();
 
     graph.dfs_recursive(root, visited, parents, back_edges);
-    graph.sort_back_edges(back_edges);
 
     auto INTERMEDIATE = chrono::high_resolution_clock::now();
     double intermediate_time_taken = chrono::duration_cast<chrono::nanoseconds>(INTERMEDIATE - CLOCK_START).count();
     intermediate_time_taken *= 1e-9;
-    cout << "\nTime taken : " << fixed << intermediate_time_taken << setprecision(9) << " sec" << endl;
-    
-    if (graph_data.size() == visited.size()) {
+    cout << "\nTime taken in DFS : " << fixed << intermediate_time_taken << setprecision(9) << " sec" << endl;
+
+    graph.sort_back_edges(back_edges);
+
+    auto INTERMEDIATE2 = chrono::high_resolution_clock::now();
+    intermediate_time_taken = chrono::duration_cast<chrono::nanoseconds>(INTERMEDIATE2 - INTERMEDIATE).count();
+    intermediate_time_taken *= 1e-9;
+    cout << "\nTime taken in SORT : " << fixed << intermediate_time_taken << setprecision(9) << " sec" << endl;
+
+    if (graph_data.size() == visited.size())
+    {
         auto ears = GraphAnalysis::ear_decomposition(parents, back_edges);
 
-        // std::cout << "Ears: " << std::endl;
+        // cout << "Ears: " << endl;
         // for (const auto& ear : ears) {
         //     for (int node : ear) {
-        //         std::cout << node << " ";
+        //         cout << node << " ";
         //     }
-        //     std::cout << std::endl;
+        //     cout << endl;
         // }
 
         bool is_biconnected = GraphAnalysis::test_for_biconnectedness(graph_data, ears);
-        std::cout << "Graph is " << (is_biconnected ? "biconnected" : "not biconnected") << std::endl;
-    } else {
-        std::cout << "Graph is not biconnected" << std::endl;
+        cout << "Graph is " << (is_biconnected ? "biconnected" : "not biconnected") << endl;
+    }
+    else
+    {
+        cout << "Graph is not biconnected" << endl;
     }
     auto CLOCK_STOP = chrono::high_resolution_clock::now();
     double full_time_taken = chrono::duration_cast<chrono::nanoseconds>(CLOCK_STOP - INTERMEDIATE).count();
     full_time_taken *= 1e-9;
-    cout << "Time taken : " << fixed << full_time_taken << setprecision(9) << " sec" << endl;
+    cout << "Time taken in checking and all final : " << fixed << full_time_taken << setprecision(9) << " sec" << endl;
 }
