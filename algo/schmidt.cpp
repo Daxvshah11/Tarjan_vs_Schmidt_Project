@@ -14,16 +14,16 @@ public:
         visit_order_index.resize(adj_list.size(), -1);
     }
 
-    void dfs_recursive(int node, vector<int> &visited, map<int, int> &parent, set<pair<int, int>> &back_edges)
+    void dfs_recursive(int node, vector<bool> &visited, map<int, int> &parent, set<pair<int, int>> &back_edges)
     {
         // Add node to visited nodes list
-        int order = visited.size();
-        visited.push_back(node);
-        visit_order_index[node] = order;
+        static int order = 0;
+        visited[node] = true;
+        visit_order_index[node] = order++;
         for (int neighbor : adjacency_list[node])
         {
             // Keep track of parent node of the neighbour node and continue with DFS
-            if (find(visited.begin(), visited.end(), neighbor) == visited.end())
+            if (!visited[neighbor])
             {
                 parent[neighbor] = node;
                 dfs_recursive(neighbor, visited, parent, back_edges);
@@ -32,7 +32,7 @@ public:
             else if (parent[node] != neighbor)
             {
                 pair<int, int> edge = {node, neighbor};
-                if (back_edges.find( edge) == back_edges.end())
+                if (back_edges.find(edge) == back_edges.end())
                     back_edges.insert({neighbor, node});
             }
         }
@@ -127,7 +127,8 @@ int main()
     map<int, unordered_set<int>> graph_data = generateRandomGraph();
 
     Graph graph(graph_data);
-    vector<int> visited;
+    vector<bool> visited(graph_data.size(), false);
+    // vector<int> visited;
     map<int, int> parents;
     set<pair<int, int>> back_edge;
     int root = 0;
@@ -152,7 +153,7 @@ int main()
     intermediate_time_taken *= 1e-9;
     cout << "\nTime taken in SORT : " << fixed << intermediate_time_taken << setprecision(9) << " sec" << endl;
 
-    if (graph_data.size() == visited.size())
+    if (graph_data.size() == count(visited.begin(), visited.end(), true))
     {
         auto ears = GraphAnalysis::ear_decomposition(parents, back_edges);
 
