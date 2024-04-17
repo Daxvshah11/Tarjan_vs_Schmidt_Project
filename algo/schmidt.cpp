@@ -14,7 +14,7 @@ public:
         visit_order_index.resize(adj_list.size(), -1);
     }
 
-    void dfs_recursive(int node, vector<int> &visited, map<int, int> &parent, vector<pair<int, int>> &back_edges)
+    void dfs_recursive(int node, vector<int> &visited, map<int, int> &parent, set<pair<int, int>> &back_edges)
     {
         // Add node to visited nodes list
         int order = visited.size();
@@ -32,8 +32,8 @@ public:
             else if (parent[node] != neighbor)
             {
                 pair<int, int> edge = {node, neighbor};
-                if (find(back_edges.begin(), back_edges.end(), edge) == back_edges.end())
-                    back_edges.push_back({neighbor, node});
+                if (back_edges.find( edge) == back_edges.end())
+                    back_edges.insert({neighbor, node});
             }
         }
     }
@@ -129,12 +129,16 @@ int main()
     Graph graph(graph_data);
     vector<int> visited;
     map<int, int> parents;
-    vector<pair<int, int>> back_edges;
+    set<pair<int, int>> back_edge;
     int root = 0;
 
     auto CLOCK_START = chrono::high_resolution_clock::now();
 
-    graph.dfs_recursive(root, visited, parents, back_edges);
+    graph.dfs_recursive(root, visited, parents, back_edge);
+    vector<pair<int, int>> back_edges;
+    for(auto it = back_edge.begin(); it != back_edge.end(); it++)
+        back_edges.push_back(*it);
+
 
     auto INTERMEDIATE = chrono::high_resolution_clock::now();
     double intermediate_time_taken = chrono::duration_cast<chrono::nanoseconds>(INTERMEDIATE - CLOCK_START).count();
