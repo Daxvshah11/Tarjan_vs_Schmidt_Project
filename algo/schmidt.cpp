@@ -137,21 +137,20 @@ int main()
 
     graph.dfs_recursive(root, visited, parents, back_edge);
     vector<pair<int, int>> back_edges;
-    for(auto it = back_edge.begin(); it != back_edge.end(); it++)
+    for (auto it = back_edge.begin(); it != back_edge.end(); it++)
         back_edges.push_back(*it);
 
+    // auto INTERMEDIATE = chrono::high_resolution_clock::now();
+    // double intermediate_time_taken = chrono::duration_cast<chrono::nanoseconds>(INTERMEDIATE - CLOCK_START).count();
+    // intermediate_time_taken *= 1e-9;
+    // cout << "\nTime taken in DFS : " << fixed << intermediate_time_taken << setprecision(9) << " sec" << endl;
 
-    auto INTERMEDIATE = chrono::high_resolution_clock::now();
-    double intermediate_time_taken = chrono::duration_cast<chrono::nanoseconds>(INTERMEDIATE - CLOCK_START).count();
-    intermediate_time_taken *= 1e-9;
-    cout << "\nTime taken in DFS : " << fixed << intermediate_time_taken << setprecision(9) << " sec" << endl;
+    // graph.sort_back_edges(back_edges);
 
-    graph.sort_back_edges(back_edges);
-
-    auto INTERMEDIATE2 = chrono::high_resolution_clock::now();
-    intermediate_time_taken = chrono::duration_cast<chrono::nanoseconds>(INTERMEDIATE2 - INTERMEDIATE).count();
-    intermediate_time_taken *= 1e-9;
-    cout << "\nTime taken in SORT : " << fixed << intermediate_time_taken << setprecision(9) << " sec" << endl;
+    // auto INTERMEDIATE2 = chrono::high_resolution_clock::now();
+    // intermediate_time_taken = chrono::duration_cast<chrono::nanoseconds>(INTERMEDIATE2 - INTERMEDIATE).count();
+    // intermediate_time_taken *= 1e-9;
+    // cout << "\nTime taken in SORT : " << fixed << intermediate_time_taken << setprecision(9) << " sec" << endl;
 
     if (graph_data.size() == count(visited.begin(), visited.end(), true))
     {
@@ -173,7 +172,7 @@ int main()
         cout << "Graph is not biconnected" << endl;
     }
     auto CLOCK_STOP = chrono::high_resolution_clock::now();
-    double full_time_taken = chrono::duration_cast<chrono::nanoseconds>(CLOCK_STOP - INTERMEDIATE).count();
+    double full_time_taken = chrono::duration_cast<chrono::nanoseconds>(CLOCK_STOP - CLOCK_START).count();
     full_time_taken *= 1e-9;
     cout << "Time taken in checking and all final : " << fixed << full_time_taken << setprecision(9) << " sec" << endl;
 }
