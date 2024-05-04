@@ -161,8 +161,8 @@ bool Tarjan_BiconnCheck(map<int, unordered_set<int>> &graph)
 // MAIN
 int main()
 {
-    // generating a randomg graph using the function from header file
-    map<int, unordered_set<int>> graph = generateRandomGraph();
+    // generating a randomg graph using the function
+    map<int, unordered_set<int>> graph = generateRandomGraph(); 
 
     // printing the graph (COMMENT THIS FOR LARGE DATASET INPUTS)
     // printGraph(graph);
