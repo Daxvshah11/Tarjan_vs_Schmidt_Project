@@ -22,7 +22,16 @@ void DFS(const map<int, unordered_set<int>> &graph, map<int, unordered_set<int>>
             // if its visited then back edge case
 
             // adding a back edge from the neighbour to the node in directed graph
-            directedGraphBackEdges[neighbour].insert(node);
+
+            auto it_node = find(visitingOrder.begin(), visitingOrder.end(), node);
+            auto it_neighbour = find(visitingOrder.begin(), visitingOrder.end(), neighbour);
+            if (it_neighbour < it_node)
+            {
+                // Adding a back edge from the neighbour to the node in directed graph
+                directedGraphBackEdges[neighbour].insert(node);
+            }
+
+            // directedGraphBackEdges[neighbour].insert(node);
         }
         else
         {
@@ -38,43 +47,19 @@ void DFS(const map<int, unordered_set<int>> &graph, map<int, unordered_set<int>>
 }
 
 /*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 */
 
 void deepMove(map<int, unordered_set<int>> &directedGraphEdges, int node)
 {
+    auto edgesCopy = directedGraphEdges[node];
     // iterating over possible end points from node
-    for (int endPoint : directedGraphEdges[node])
+    for (int endPoint : edgesCopy)
     {
         // removing the edge
         directedGraphEdges[node].erase(endPoint);
 
         // printing that edge
-        cout << node << "-" << endPoint << ", ";
+        cout << "deepmove" << node << "-" << endPoint << endl;
 
         // recursive call on the end point
         deepMove(directedGraphEdges, endPoint);
@@ -92,11 +77,30 @@ bool Schmidt_BiconnCheck(map<int, unordered_set<int>> &graph)
     // calling the DFS function
     DFS(graph, directedGraphEdges, directedGraphBackEdges, visitingOrder, visited, 0, -1);
 
+    for (auto value : visitingOrder) {
+        std::cout << value << " ";
+    }
+    std::cout << std::endl;
+
+    for (const auto& pair : directedGraphEdges) {
+        std::cout << "directedGraphEdges Key: " << pair.first << ", Values: ";
+        for (const auto& value : pair.second) {
+            std::cout << value << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    for (const auto& pair : directedGraphBackEdges) {
+        std::cout << "directedGraphBackEdges Key: " << pair.first << ", Values: ";
+        for (const auto& value : pair.second) {
+            std::cout << value << " ";
+        }
+        std::cout << std::endl;
+    }
     // iterating over the directed graph again in DFS order
     for (int node : visitingOrder)
     {
         // doing DFS again from this node and removing the edges
-
         // choosing back edges from this node
         for (int backEdgeEndPoint : directedGraphBackEdges[node])
         {
@@ -104,7 +108,7 @@ bool Schmidt_BiconnCheck(map<int, unordered_set<int>> &graph)
             directedGraphEdges[node].erase(backEdgeEndPoint);
 
             // printing this back edge
-            cout << node << "-" << backEdgeEndPoint;
+            cout << "schmidt-biconn" << node << "-" << backEdgeEndPoint << endl;
 
             // doing a deep move
             deepMove(directedGraphEdges, backEdgeEndPoint);
@@ -112,6 +116,22 @@ bool Schmidt_BiconnCheck(map<int, unordered_set<int>> &graph)
             // moving to new line
             cout << endl;
         }
+    }
+
+    for (const auto& pair : directedGraphEdges) {
+        std::cout << "leftover directedGraphEdges Key: " << pair.first << ", Values: ";
+        for (const auto& value : pair.second) {
+            std::cout << value << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    for (const auto& pair : directedGraphBackEdges) {
+        std::cout << "leftover directedGraphBackEdges Key: " << pair.first << ", Values: ";
+        for (const auto& value : pair.second) {
+            std::cout << value << " ";
+        }
+        std::cout << std::endl;
     }
 
     // checking if there is any edge still left in either of directed edge graphs or of back edges
@@ -132,28 +152,6 @@ bool Schmidt_BiconnCheck(map<int, unordered_set<int>> &graph)
 }
 
 /*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 */
 
 // MAIN
@@ -171,7 +169,8 @@ int main()
         {6, {3, 5, 7, 9}},
         {7, {5, 6, 8, 9}},
         {8, {4, 7}},
-        {9, {6, 7}}};
+        {9, {6, 7}}
+    };
 
     // check biconnectedness
     bool isBiconnected = Schmidt_BiconnCheck(graph);
