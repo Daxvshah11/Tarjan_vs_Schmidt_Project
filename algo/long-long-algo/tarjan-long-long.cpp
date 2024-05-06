@@ -47,7 +47,7 @@ void DFS(const map<ll, unordered_set<ll>> &graph, vector<bool> &visited, ll &vis
                 articulationPoints.push_back(node);
             }
             else if (parent[node] != -1 && low[neighbour] >= discoveryTime[node])
-            {
+            {   
                 // this is if node is not root and is an articulation point
                 articulationPoints.push_back(node);
             }
@@ -65,6 +65,23 @@ void DFS(const map<ll, unordered_set<ll>> &graph, vector<bool> &visited, ll &vis
 }
 
 /*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  */
 
 // function for performing Tarjan's algo
@@ -109,11 +126,35 @@ bool Tarjan_BiconnCheck(map<ll, unordered_set<ll>> &graph)
     time_taken *= 1e-9;
     cout << "\nTime taken : " << fixed << time_taken << setprecision(9) << " sec" << endl;
 
+    // Biconnected components
+
+
     // returning the articulation points
     return isBiconnected;
 }
 
 /*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  */
 
 // MAIN
@@ -121,6 +162,7 @@ int main()
 {
     // generating a randomg graph using the function
     map<ll, unordered_set<ll>> graph = generateRandomGraph();
+
     // map<ll, unordered_set<ll>> graph = {
     //         {0, {1, 2}},
     //         {1, {0, 2}},
@@ -128,6 +170,7 @@ int main()
     //         {3, {2, 4}},
     //         {4, {2, 3}}
     //     };
+
     // printing the graph (COMMENT THIS FOR LARGE DATASET INPUTS)
     // printGraph(graph);
 
