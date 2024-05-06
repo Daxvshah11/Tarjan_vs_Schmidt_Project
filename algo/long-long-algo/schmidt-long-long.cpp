@@ -1,20 +1,20 @@
 #include <bits/stdc++.h>
 #include <chrono>
-#include "graphGenerator.cpp"
+#include "graphGenerator-long-long.cpp"
 #pragma GCC optimize("O3,unroll-loops")
 #pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
-
+using ll = long long;
 using namespace std;
 
-void DFS(const map<int, unordered_set<int>> &graph, map<int, unordered_set<int>> &directedGraphEdges, map<int, unordered_set<int>> &directedGraphBackEdges, unordered_map<int, int> &visitedTime, vector<int> &visitingOrder, vector<bool> &visited, int node, int parent)
+void DFS(const map<ll, unordered_set<ll>> &graph, map<ll, unordered_set<ll>> &directedGraphEdges, map<ll, unordered_set<ll>> &directedGraphBackEdges, unordered_map<ll, ll> &visitedTime, vector<ll> &visitingOrder, vector<bool> &visited, ll node, ll parent)
 {
-    static int time = 0;
+    static ll time = 0;
     visited[node] = true;
     visitingOrder.push_back(node);
     visitedTime[node] = time++;
 
     // iterating over all the neighbours
-    for (int neighbour : graph.at(node))
+    for (ll neighbour : graph.at(node))
     {
         // checking if the neighbour is parent
         if (neighbour == parent)
@@ -42,10 +42,10 @@ void DFS(const map<int, unordered_set<int>> &graph, map<int, unordered_set<int>>
 /*
 */
 
-void deepMove(map<int, unordered_set<int>> &directedGraphEdges, int node, vector<int> &ear)
+void deepMove(map<ll, unordered_set<ll>> &directedGraphEdges, ll node, vector<ll> &ear)
 {
     if ((directedGraphEdges.find(node) != directedGraphEdges.end()) && (!directedGraphEdges[node].empty())){
-        int endPoint = *directedGraphEdges[node].begin();
+        ll endPoint = *directedGraphEdges[node].begin();
         directedGraphEdges[node].erase(endPoint);
         ear.push_back(endPoint);
         // recursive call on the end point
@@ -53,30 +53,35 @@ void deepMove(map<int, unordered_set<int>> &directedGraphEdges, int node, vector
     }
 }
 
-bool Schmidt_BiconnCheck(map<int, unordered_set<int>> &graph)
+bool Schmidt_BiconnCheck(map<ll, unordered_set<ll>> &graph)
 {
     // declaring variables
-    map<int, unordered_set<int>> directedGraphEdges{};
-    map<int, unordered_set<int>> directedGraphBackEdges{};
-    unordered_map<int, int> visitedTime{};
+    map<ll, unordered_set<ll>> directedGraphEdges{};
+    map<ll, unordered_set<ll>> directedGraphBackEdges{};
+    unordered_map<ll, ll> visitedTime{};
     vector<bool> visited(graph.size(), false);
-    vector<int> visitingOrder{};
+    vector<ll> visitingOrder{};
 
     // calling the DFS function and benchmarking it.
+    auto dfs_CLOCK_START = chrono::high_resolution_clock::now();
     DFS(graph, directedGraphEdges, directedGraphBackEdges, visitedTime, visitingOrder, visited, 0, -1);
+    auto dfs_CLOCK_STOP = chrono::high_resolution_clock::now();
+    double time_taken = chrono::duration_cast<chrono::nanoseconds>(dfs_CLOCK_STOP - dfs_CLOCK_START).count();
+    time_taken *= 1e-9;
+    cout << "\nDFS Time taken : " << fixed << time_taken << setprecision(9) << " sec" << endl;
 
     // iterating over the directed graph again in DFS order
-    vector<vector<int>> ears_list;
-    int cycle_count = 0;
-    int ear_edge_count = 0;
-    for (int node : visitingOrder)
+    vector<vector<ll>> ears_list;
+    ll cycle_count = 0;
+    ll ear_edge_count = 0;
+    for (ll node : visitingOrder)
     {
         // doing DFS again from this node and removing the edges
         // choosing back edges from this node
-        for (int backEdgeEndPoint : directedGraphBackEdges[node])
+        for (ll backEdgeEndPoint : directedGraphBackEdges[node])
         {
             // doing a deep move
-            vector<int> ear = {node, backEdgeEndPoint};
+            vector<ll> ear = {node, backEdgeEndPoint};
             deepMove(directedGraphEdges, backEdgeEndPoint, ear);
             ear_edge_count += ear.size() - 1;
             // ears_list.push_back(std::move(ear));
@@ -90,7 +95,7 @@ bool Schmidt_BiconnCheck(map<int, unordered_set<int>> &graph)
         }
     }
 
-    int graph_edge_count = 0;
+    ll graph_edge_count = 0;
     for (const auto &pair : graph)
     {
         graph_edge_count += pair.second.size();
@@ -118,9 +123,9 @@ bool Schmidt_BiconnCheck(map<int, unordered_set<int>> &graph)
 int main()
 {
     // generating a randomg graph using the function
-    map<int, unordered_set<int>> graph = generateRandomGraph();
+    map<ll, unordered_set<ll>> graph = generateRandomGraph();
 
-    // map<int, unordered_set<int>> graph = {
+    // map<ll, unordered_set<ll>> graph = {
     //     {0, {1, 2}},
     //     {1, {0, 2, 4}},
     //     {2, {0, 1, 3, 5}},
@@ -131,6 +136,15 @@ int main()
     //     {7, {5, 6, 8, 9}},
     //     {8, {4, 7}},
     //     {9, {6, 7}}
+    // };
+
+    // map<ll, unordered_set<ll>> graph = {
+    //     {0, {1, 2}},
+    //     {1, {0, 2}},
+    //     {2, {0, 1}},
+    //     {3, {4, 5}},
+    //     {4, {3, 5}},
+    //     {5, {3, 4}}
     // };
 
     auto CLOCK_START = chrono::high_resolution_clock::now();

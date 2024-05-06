@@ -1,11 +1,11 @@
 #include <bits/stdc++.h>
 #include <chrono>
-#include "graphGenerator.cpp"
-
+#include "graphGenerator-long-long.cpp"
+using ll = long long;
 using namespace std;
 
 // function for performing Tarjan's DFS
-void DFS(const map<int, unordered_set<int>> &graph, vector<bool> &visited, int node, vector<int> &discoveryTime, vector<int> &low, vector<int> &parent, int time, vector<int> &articulationPoints)
+void DFS(const map<ll, unordered_set<ll>> &graph, vector<bool> &visited, ll node, vector<ll> &discoveryTime, vector<ll> &low, vector<ll> &parent, ll time, vector<ll> &articulationPoints)
 {
     // setting visited of this node to True
     visited[node] = true;
@@ -17,10 +17,10 @@ void DFS(const map<int, unordered_set<int>> &graph, vector<bool> &visited, int n
     low[node] = time;
 
     // initialising children count
-    int children = 0;
+    ll children = 0;
 
     // iterating over all the neighbours of node
-    for (int neighbour : graph.at(node))
+    for (ll neighbour : graph.at(node))
     {
         // checking if the neighbour is visited or not
         if (!visited[neighbour])
@@ -62,45 +62,22 @@ void DFS(const map<int, unordered_set<int>> &graph, vector<bool> &visited, int n
 }
 
 /*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 */
 
 // function for performing Tarjan's algo
-bool Tarjan_BiconnCheck(map<int, unordered_set<int>> &graph)
+bool Tarjan_BiconnCheck(map<ll, unordered_set<ll>> &graph)
 {
     // initialising bool
     bool isBiconnected{true};
 
     // intialising all variables for the DFS call
-    vector<int> articulationPoints{};
+    vector<ll> articulationPoints{};
     vector<bool> visited(graph.size() + 1, false);
-    vector<int> discoveryTime(graph.size() + 1, -1);
-    vector<int> low(graph.size() + 1, -1);
-    vector<int> parent(graph.size() + 1, -1);
-    int time = 0;
-    int root = 0;
+    vector<ll> discoveryTime(graph.size() + 1, -1);
+    vector<ll> low(graph.size() + 1, -1);
+    vector<ll> parent(graph.size() + 1, -1);
+    ll time = 0;
+    ll root = 0;
     // START TIMER
     auto CLOCK_START = chrono::high_resolution_clock::now();
 
@@ -132,38 +109,14 @@ bool Tarjan_BiconnCheck(map<int, unordered_set<int>> &graph)
 }
 
 /*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 */
 
 // MAIN
 int main()
 {
     // generating a randomg graph using the function
-    map<int, unordered_set<int>> graph = generateRandomGraph(); 
-    // map<int, unordered_set<int>> graph = {
+    map<ll, unordered_set<ll>> graph = generateRandomGraph(); 
+    // map<ll, unordered_set<ll>> graph = {
     //         {0, {1, 2}},
     //         {1, {0, 2}},
     //         {2, {0, 1, 3, 4}},
