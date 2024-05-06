@@ -1,6 +1,6 @@
 #include <chrono>
 #include <bits/stdc++.h>
-#include "graphGenerator.cpp"
+#include "../long-long-algo/graphGenerator-long-long.cpp"
 
 using namespace std;
 

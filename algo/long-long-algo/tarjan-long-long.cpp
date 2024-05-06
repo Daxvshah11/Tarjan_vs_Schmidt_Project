@@ -5,10 +5,13 @@ using ll = long long;
 using namespace std;
 
 // function for performing Tarjan's DFS
-void DFS(const map<ll, unordered_set<ll>> &graph, vector<bool> &visited, ll node, vector<ll> &discoveryTime, vector<ll> &low, vector<ll> &parent, ll time, vector<ll> &articulationPoints)
+void DFS(const map<ll, unordered_set<ll>> &graph, vector<bool> &visited, ll &visitedNodesCount, ll node, vector<ll> &discoveryTime, vector<ll> &low, vector<ll> &parent, ll time, vector<ll> &articulationPoints)
 {
     // setting visited of this node to True
     visited[node] = true;
+
+    // incrememting visited nodes count
+    visitedNodesCount++;
 
     // setting discovery time
     discoveryTime[node] = time;
@@ -32,7 +35,7 @@ void DFS(const map<ll, unordered_set<ll>> &graph, vector<bool> &visited, ll node
             children++;
 
             // recursive DFS call on the neighbour
-            DFS(graph, visited, neighbour, discoveryTime, low, parent, time + 1, articulationPoints);
+            DFS(graph, visited, visitedNodesCount, neighbour, discoveryTime, low, parent, time + 1, articulationPoints);
 
             // updating low value for node
             low[node] = min(low[node], low[neighbour]);
@@ -62,7 +65,7 @@ void DFS(const map<ll, unordered_set<ll>> &graph, vector<bool> &visited, ll node
 }
 
 /*
-*/
+ */
 
 // function for performing Tarjan's algo
 bool Tarjan_BiconnCheck(map<ll, unordered_set<ll>> &graph)
@@ -76,16 +79,18 @@ bool Tarjan_BiconnCheck(map<ll, unordered_set<ll>> &graph)
     vector<ll> discoveryTime(graph.size() + 1, -1);
     vector<ll> low(graph.size() + 1, -1);
     vector<ll> parent(graph.size() + 1, -1);
+    ll visitedNodesCount = 0;
     ll time = 0;
     ll root = 0;
     // START TIMER
     auto CLOCK_START = chrono::high_resolution_clock::now();
 
-    DFS(graph, visited, root, discoveryTime, low, parent, time, articulationPoints);
-    // Check for graph connectedness
-    if (graph.size() != visited.size() - 1) 
+    DFS(graph, visited, visitedNodesCount, root, discoveryTime, low, parent, time, articulationPoints);
+
+    // check for disconnectedness
+    if (visitedNodesCount != graph.size())
     {
-        // this means the graph is DISCONNECTED in the first place
+        // this means the graph is NOT CONNECTED in the first place
         isBiconnected = false;
     }
 
@@ -109,13 +114,13 @@ bool Tarjan_BiconnCheck(map<ll, unordered_set<ll>> &graph)
 }
 
 /*
-*/
+ */
 
 // MAIN
 int main()
 {
     // generating a randomg graph using the function
-    map<ll, unordered_set<ll>> graph = generateRandomGraph(); 
+    map<ll, unordered_set<ll>> graph = generateRandomGraph();
     // map<ll, unordered_set<ll>> graph = {
     //         {0, {1, 2}},
     //         {1, {0, 2}},
