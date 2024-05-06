@@ -10,8 +10,8 @@ def run_binary(binary_path, num_nodes, num_edges):
     return output
 
 binary_paths = ["../binaries/tarjan-flags", "../binaries/schmidt-flags"]
-nodes = [10000, 30000, 60000, 100000]
-density_increments = [0.6, 0.7, 0.8, 0.9]
+nodes = [30000, 60000, 100000]
+density_increments = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 num_iterations = 1
 
 with open('results.csv', mode='a', newline='') as csvfile:
