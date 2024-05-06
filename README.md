@@ -12,3 +12,8 @@
 _(eg. different densities of graphs)_
 
 * Seeding the random generator with current time at that moment in order to get the reltively more random outputs
+
+
+## COMMANDS
+
+> g++ -Wall -Wextra -pedantic -std=c++17 -Ofast filename.cpp
