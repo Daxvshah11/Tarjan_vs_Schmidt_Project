@@ -67,8 +67,10 @@ Consider a simple graph with five vertices:
 - After the traversal, node 2 is identified as an articulation point because its low value is greater than its discovery time.
 - Since an articulation point is found, the graph is not biconnected.
 
+### Observations
 
-
+- Time complexity: $O(V+E)$
+- Space complexiy: $O(V)$
 
 
 ## `Schmidt's Algorithm`
@@ -111,22 +113,49 @@ Consider a simple graph with five vertices:
 - Back edges are identified, and ears are constructed.
 - If only one cycle is found and the number of ear edges matches the original graph's edge count, the graph is considered biconnected.
 
+### Observations
 
-
-
+- Time complexity: 
+   - The DFS function has a time complexity of $O(V+E)$ as it traverses each vertex and each edge exactly once.
+   - The deepMove function has $O(E)$ complexity in the worst case.
+   - So, total time complexity is $O(V+E)$
+- Space complexiy: $O(V)$
 
 
 ## `Test-cases`
 As mentioned above, we have tried to perform extensive testing on as many variety of graphs as possible using our own generated random graph generator function.
 
 1. **Sparse Graphs**
-    - iterating over number of nodes of values []
-        - [something something]
+
+    - We've picked nodes of sizes ranging from `[10000, 100000, 500000, 2500000, 7500000, 10000000, 50000000, 100000000](10k to 100 million)` with edge sizes for each node ranging from the multipliers of `[0.001, 0.01, 0.1, 0.5, 1, 5, 10]`
+        - For example, for a graph with 100 million nodes, we've benchmarked the following edges - `[100k, 1 million and so on till 1 billion]`
+        - The maximum we've been able to benchmark were graph sizes with `100 million nodes and 10 million edges` and `50 million nodes and 25 million edges`.
 
 2. **Dense Graphs**
-    - iterating over number of nodes of values []
+    - We've picked nodes of sizes ranging from `[10, 100, 1000, 10000, 30000, 60000, 100000]` with edge sizes proportional to a density range between `[0.1, 0.9]` with increments of `0.1`.
+      - The maximum we've been able to benchmark were the graph sizes with `30000 nodes and 90 million edges`.
 
+## `Performance Plots`
 
+### Log scale plots:
+![image info](./algo/benchmark/plots/dense-graph-log-scale.png)
+![image info](./algo/benchmark/plots/sparse-graph-log-scale.png)
 
+### Linear scale plots:
+![image info](./algo/benchmark/plots/dense-graph-linear-scale.png)
+![image info](./algo/benchmark/plots/sparse-graph-linear-scale.png)
 
-## `Plots`
+## `Additional work`
+
+Initially, We've written a different variant of schmidt's algorithm which sorts the back-edges after the DFS traversal is done. This added extra runtime due to the additional ElogE sorting performed, and has been duly rectified in the current implementation. 
+
+## `Conclusion`
+
+As seen per the performance plots, we notice that there isn't much difference between the runtimes of Tarjan's and Schmidt's algorithms in the case of sparse graphs. 
+
+Although we see heavy performance gains with Tarjan over Schmidt in the case with dense graphs.  
+
+## `References`
+* [Ramachandra's ear decomposition blog](https://codeforces.com/blog/entry/80932)
+* [Jen Schmidt's paper](https://arxiv.org/abs/1209.0700)
+* [Tarjan's biconnectivity paper](https://ieeexplore.ieee.org/document/4569669)

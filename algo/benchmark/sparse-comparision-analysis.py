@@ -32,7 +32,7 @@ def sweep_edges(binary_paths, nodes_list, edge_multipliers, num_iterations):
                     writer.writerow({'algorithm': binary_name, 'node_count': num_nodes, 'edge_count': num_edges, 'runtime': avg_time})
 
 binary_paths = ["../binaries/tarjan-flags", "../binaries/schmidt-flags"]
-nodes_list = [100000000]
+nodes_list = [10000, 100000, 500000, 2500000, 7500000, 10000000, 50000000, 100000000]
 num_iterations = 1
 edge_multipliers = [0.001, 0.01, 0.1, 0.5, 1, 5, 10]
 sweep_edges(binary_paths, nodes_list, edge_multipliers, num_iterations)

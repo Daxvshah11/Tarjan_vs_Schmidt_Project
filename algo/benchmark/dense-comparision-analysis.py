@@ -14,7 +14,7 @@ nodes = [30000, 60000, 100000]
 density_increments = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 num_iterations = 1
 
-with open('results.csv', mode='a', newline='') as csvfile:
+with open('dense-results.csv', mode='a', newline='') as csvfile:
     fieldnames = ['algorithm', 'node_count', 'edge_count', 'density', 'runtime']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
@@ -34,5 +34,5 @@ with open('results.csv', mode='a', newline='') as csvfile:
                     else:
                         print(f"Time taken not found in output of {binary_path}")
                 avg_time = total_time / num_iterations                
-                print("Completed: ", binary_name, num_nodes, num_edges, density)
+                print("Completed: ", binary_name, num_nodes, num_edges, density, avg_time)
                 writer.writerow({'algorithm': binary_name, 'node_count': num_nodes, 'edge_count': num_edges, 'density': density, 'runtime': avg_time})
