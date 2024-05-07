@@ -1,5 +1,9 @@
 # REPORT
 
+## `Problem Statement`
+
+Study the biconnectivity algorithms of Tarjan and Schmidt for their practical differences in run time, sparse vs dense graphs, and the like.
+
 ## `Assumptions`
 
 * We have assumed that the project does not include computing the exact biconnected components in either of the algorithms from the given problem statement
