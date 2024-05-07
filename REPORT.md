@@ -1,5 +1,10 @@
 # REPORT
 
+## CONTRIBUTORS
+> Daksh Shah - 2022101068\
+> Aniketh Reddimi - 2018102014
+
+
 ## `Problem Statement`
 
 Study the biconnectivity algorithms of Tarjan and Schmidt for their practical differences in run time, sparse vs dense graphs, and the like.
@@ -123,7 +128,7 @@ Consider a simple graph with five vertices:
    - The DFS function has a time complexity of $O(V+E)$ as it traverses each vertex and each edge exactly once.
    - The deepMove function has $O(E)$ complexity in the worst case.
    - So, total time complexity is $O(V+E)$
-- Space complexiy: $O(V)$
+- Space complexiy: $O(V+E)$
 
 
 ## `Test-cases`
