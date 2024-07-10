@@ -1,8 +1,8 @@
 # REPORT
 
 ## CONTRIBUTORS
-> Daksh Shah - 2022101068\
-> Aniketh Reddimi - 2018102014
+* [Daksh Shah](https://github.com/Daxvshah11)
+* [Aniketh Reddimi](https://github.com/p4r4xor)
 
 
 ## `Problem Statement`
