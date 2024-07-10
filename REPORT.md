@@ -7,7 +7,7 @@
 
 ## `Problem Statement`
 
-Study the biconnectivity algorithms of Tarjan and Schmidt for their practical differences in run time, sparse vs dense graphs, and the like.
+Study the biconnectivity algorithms of Tarjan and Schmidt for their practical differences in run time over sparse vs dense graphs, and the likes.
 
 ## `Assumptions`
 
