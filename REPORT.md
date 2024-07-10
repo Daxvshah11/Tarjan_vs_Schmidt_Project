@@ -22,7 +22,7 @@ Study the biconnectivity algorithms of Tarjan and Schmidt for their practical di
 
 **Sparse graphs** : considering a range of number of edges with respect to number of nodes to be categorised as `Sparse`. The range is as follows,
 
-$$0.1*O(N)\ <=\ |E| <=\ 10*O(N)$$
+> $$ (0.1\times O(N))\ <=\ |E|\ <=\ (10\times O(N)) $$
 
 
 **Dense graphs** : considering cases as large as the following range; $[3*10^{4},\ 10^{8}]$. So, by the typical definition of any dense graph having $O(N^{2})$ edges is not computationally feasible.
