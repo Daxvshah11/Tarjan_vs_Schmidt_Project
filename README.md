@@ -12,3 +12,10 @@
 _(eg. different densities of graphs)_
 
 * Seeding the random generator with current time at that moment in order to get the reltively more random outputs
+
+
+## COMMANDS & FLAGS
+
+We have used certain types of compilation flags available for C++ in order to have better optimisation for both the algorithms
+
+> g++ -Wall -Wextra -pedantic -std=c++17 -Ofast filename.cpp

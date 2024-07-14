@@ -1,14 +1,17 @@
 #include <bits/stdc++.h>
 #include <chrono>
-#include "graphGenerator.cpp"
-
+#include "graphGenerator-long-long.cpp"
+using ll = long long;
 using namespace std;
 
 // function for performing Tarjan's DFS
-void DFS(const map<int, unordered_set<int>> &graph, vector<bool> &visited, int node, vector<int> &discoveryTime, vector<int> &low, vector<int> &parent, int time, vector<int> &articulationPoints)
+void DFS(const map<ll, unordered_set<ll>> &graph, vector<bool> &visited, ll &visitedNodesCount, ll node, vector<ll> &discoveryTime, vector<ll> &low, vector<ll> &parent, ll time, vector<ll> &articulationPoints)
 {
     // setting visited of this node to True
     visited[node] = true;
+
+    // incrememting visited nodes count
+    visitedNodesCount++;
 
     // setting discovery time
     discoveryTime[node] = time;
@@ -17,10 +20,10 @@ void DFS(const map<int, unordered_set<int>> &graph, vector<bool> &visited, int n
     low[node] = time;
 
     // initialising children count
-    int children = 0;
+    ll children = 0;
 
     // iterating over all the neighbours of node
-    for (int neighbour : graph.at(node))
+    for (ll neighbour : graph.at(node))
     {
         // checking if the neighbour is visited or not
         if (!visited[neighbour])
@@ -32,7 +35,7 @@ void DFS(const map<int, unordered_set<int>> &graph, vector<bool> &visited, int n
             children++;
 
             // recursive DFS call on the neighbour
-            DFS(graph, visited, neighbour, discoveryTime, low, parent, time + 1, articulationPoints);
+            DFS(graph, visited, visitedNodesCount, neighbour, discoveryTime, low, parent, time + 1, articulationPoints);
 
             // updating low value for node
             low[node] = min(low[node], low[neighbour]);
@@ -44,7 +47,7 @@ void DFS(const map<int, unordered_set<int>> &graph, vector<bool> &visited, int n
                 articulationPoints.push_back(node);
             }
             else if (parent[node] != -1 && low[neighbour] >= discoveryTime[node])
-            {
+            {   
                 // this is if node is not root and is an articulation point
                 articulationPoints.push_back(node);
             }
@@ -79,49 +82,37 @@ void DFS(const map<int, unordered_set<int>> &graph, vector<bool> &visited, int n
 
 
 
-
-
-
-
-
-
-*/
+ */
 
 // function for performing Tarjan's algo
-bool Tarjan_BiconnCheck(map<int, unordered_set<int>> &graph)
+bool Tarjan_BiconnCheck(map<ll, unordered_set<ll>> &graph)
 {
     // initialising bool
     bool isBiconnected{true};
 
     // intialising all variables for the DFS call
-    vector<int> articulationPoints{};
+    vector<ll> articulationPoints{};
     vector<bool> visited(graph.size() + 1, false);
-    vector<int> discoveryTime(graph.size() + 1, -1);
-    vector<int> low(graph.size() + 1, -1);
-    vector<int> parent(graph.size() + 1, -1);
-    int time = 0;
-
+    vector<ll> discoveryTime(graph.size() + 1, -1);
+    vector<ll> low(graph.size() + 1, -1);
+    vector<ll> parent(graph.size() + 1, -1);
+    ll visitedNodesCount = 0;
+    ll time = 0;
+    ll root = 0;
     // START TIMER
     auto CLOCK_START = chrono::high_resolution_clock::now();
 
-    // iterating over all the nodes in case graph is disconnected or something like that
-    for (int thisNode = 1; thisNode <= graph.size(); thisNode++)
+    DFS(graph, visited, visitedNodesCount, root, discoveryTime, low, parent, time, articulationPoints);
+
+    // check for disconnectedness
+    if (visitedNodesCount != graph.size())
     {
-        if (thisNode == 1)
-        {
-            // calling DFS on the graph to find all the articulation points
-            DFS(graph, visited, thisNode, discoveryTime, low, parent, time, articulationPoints);
-        }
-        else if (!visited[thisNode] && thisNode != 1)
-        {
-            // this means the graph is DISCONNECTED in the first place
-            isBiconnected = false;
-            break;
-        }
+        // this means the graph is NOT CONNECTED in the first place
+        isBiconnected = false;
     }
 
     // checking if articulation points are found
-    if (isBiconnected && articulationPoints.size() != 0)
+    if (articulationPoints.size() != 0)
     {
         // this means the graph is NOT BICONNECTED
         isBiconnected = false;
@@ -134,6 +125,9 @@ bool Tarjan_BiconnCheck(map<int, unordered_set<int>> &graph)
     double time_taken = chrono::duration_cast<chrono::nanoseconds>(CLOCK_STOP - CLOCK_START).count();
     time_taken *= 1e-9;
     cout << "\nTime taken : " << fixed << time_taken << setprecision(9) << " sec" << endl;
+
+    // Biconnected components
+
 
     // returning the articulation points
     return isBiconnected;
@@ -161,26 +155,31 @@ bool Tarjan_BiconnCheck(map<int, unordered_set<int>> &graph)
 
 
 
-
-
-
-*/
+ */
 
 // MAIN
 int main()
 {
-    // generating a randomg graph using the function from header file
-    map<int, unordered_set<int>> graph = generateRandomGraph();
+    // generating a randomg graph using the function
+    map<ll, unordered_set<ll>> graph = generateRandomGraph();
+
+    // map<ll, unordered_set<ll>> graph = {
+    //         {0, {1, 2}},
+    //         {1, {0, 2}},
+    //         {2, {0, 1, 3, 4}},
+    //         {3, {2, 4}},
+    //         {4, {2, 3}}
+    //     };
 
     // printing the graph (COMMENT THIS FOR LARGE DATASET INPUTS)
-    printGraph(graph);
+    // printGraph(graph);
 
     // finding articulation points
     bool isBiconnected = Tarjan_BiconnCheck(graph);
 
     // printing final output
     if (isBiconnected)
-        cout << "\nGraph is Biconnected" << endl;
+        cout << "\nGraph is biconnected" << endl;
     else
-        cout << "\nGraph is NOT Biconnected" << endl;
+        cout << "\nGraph is not biconnected" << endl;
 }
